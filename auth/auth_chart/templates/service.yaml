@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dz6-auth.fullname" . }}
+  labels:
+    {{- include "dz6-auth.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: service-http
+  selector:
+    {{- include "dz6-auth.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "dz6-auth.fullname" . }}-migration-scripts
+data:
+  init.sql: "-- ----------------------------\r\n-- Table structure for auth\r\n--
+    ----------------------------\r\nDROP TABLE IF EXISTS \"public\".auth_users;\r\nCREATE
+    TABLE \"public\".auth_users\r\n(\r\n    \"id\"        int8 NOT NULL GENERATED
+    ALWAYS AS IDENTITY (\r\n        INCREMENT 1\r\n        MINVALUE 1\r\n        MAXVALUE
+    9223372036854775807\r\n        START 1\r\n        ),\r\n    \"login\"     varchar(255)
+    COLLATE \"pg_catalog\".\"default\",\r\n    \"password\"  varchar(255) COLLATE
+    \"pg_catalog\".\"default\",\r\n    \"email\"     varchar(255) COLLATE \"pg_catalog\".\"default\",\r\n
+    \   \"firstName\" varchar(255) COLLATE \"pg_catalog\".\"default\",\r\n    \"lastName\"
+    \ varchar(255) COLLATE \"pg_catalog\".\"default\"\r\n);\r\n\r\n-- ----------------------------\r\n--
+    Records of users\r\n-- ----------------------------\r\nINSERT INTO \"public\".auth_users
+    OVERRIDING SYSTEM VALUE\r\nVALUES (1, 'demo1', '$2y$10$U9A8XMWsL7x9S9WFlGY8zOpS7N.4g0wJHht5KghUSwaunGm9iA9b6',
+    'demo1@localhost.com', 'Василий', 'Пупкин');\r\nINSERT INTO \"public\".auth_users
+    OVERRIDING SYSTEM VALUE\r\nVALUES (2, 'demo2', '$2y$10$7OOeImVh9UWjLK.oKQElhugoVfXNdsZb4y81PtpEfkmvD87Es5eO.',
+    'demo2@localhost.com', 'Алексей', 'Крышкин');\r\nINSERT INTO \"public\".auth_users
+    OVERRIDING SYSTEM VALUE\r\nVALUES (3, 'demo3', '$2y$10$0ewZc46GQsfLtM6FB/bYXupdvdoEDX/DXAFexfhQuVAipzioZs49C',
+    'demo3@localhost.com', 'Сергей', 'Солнцев');\r\n\r\n-- ----------------------------\r\n--
+    Primary Key structure for table auth_user\r\n-- ----------------------------\r\nALTER
+    TABLE \"public\".auth_users\r\n    ADD CONSTRAINT \"users_pkey\" PRIMARY KEY (\"id\");"

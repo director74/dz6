@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "dz6.fullname" . }}-migration-scripts
+data:
+  init.sql: "-- ----------------------------\r\n-- Table structure for users\r\n--
+    ----------------------------\r\nDROP TABLE IF EXISTS \"public\".\"users\";\r\nCREATE
+    TABLE \"public\".\"users\" (\r\n  \"id\" int8 NOT NULL GENERATED ALWAYS AS IDENTITY
+    (\r\n      INCREMENT 1\r\nMINVALUE  1\r\nMAXVALUE 9223372036854775807\r\nSTART
+    4\r\n),\r\n  \"username\" varchar(255) COLLATE \"pg_catalog\".\"default\",\r\n
+    \ \"firstName\" varchar(255) COLLATE \"pg_catalog\".\"default\",\r\n  \"lastName\"
+    varchar(255) COLLATE \"pg_catalog\".\"default\",\r\n  \"email\" varchar(255) COLLATE
+    \"pg_catalog\".\"default\",\r\n  \"phone\" varchar(255) COLLATE \"pg_catalog\".\"default\"\r\n)\r\n;\r\n\r\n--
+    ----------------------------\r\n-- Records of users\r\n-- ----------------------------\r\nINSERT
+    INTO \"public\".\"users\" OVERRIDING SYSTEM VALUE VALUES (1, 'demo1', 'Василий',
+    'Пупкин', 'demo1@localhost.com', '89999999999');\r\nINSERT INTO \"public\".\"users\"
+    OVERRIDING SYSTEM VALUE VALUES (2, 'demo2', 'Петр', 'Крышкин', 'demo2@localhost.com',
+    '89999999998');\r\nINSERT INTO \"public\".\"users\" OVERRIDING SYSTEM VALUE VALUES
+    (3, 'demo3', 'Сергей', 'Солнцев', 'demo3@localhost.com', '89999999997');\r\n\r\n--
+    ----------------------------\r\n-- Primary Key structure for table users\r\n--
+    ----------------------------\r\nALTER TABLE \"public\".\"users\" ADD CONSTRAINT
+    \"users_pkey\" PRIMARY KEY (\"id\");\r\n"

@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "dz6.fullname" . }}-migration
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: postgres
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Applying migrations...";
+              PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -f /migrations/init.sql;
+              echo "Migrations applied.";
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.global.postgresql.auth.username }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgresql
+                  key: password
+            - name: POSTGRES_HOST
+              value: {{ .Release.Name }}-postgresql
+            - name: POSTGRES_DB
+              value: {{ .Values.global.postgresql.auth.database }}
+          volumeMounts:
+            - name: migration-scripts
+              mountPath: /migrations
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.28
+          command: [ 'sh', '-c', "until nc -z {{ .Release.Name }}-postgresql {{ .Values.global.postgresql.auth.port }}; do echo waiting for db; sleep 2; done" ]
+      volumes:
+        - name: migration-scripts
+          configMap:
+            name: {{ include "dz6.fullname" . }}-migration-scripts
