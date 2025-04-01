@@ -1,4 +1,4 @@
-# dz6-auth Backend for frontends. Apigateway
+# dz6-auth Сервис, который осуществляет авторизацию Ingress Nginx Forward Authentication
 
 Для запуска проекта использовать команды
 

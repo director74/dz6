@@ -135,9 +135,9 @@ affinity: {}
 global:
   postgresql:
     auth:
-      postgresPassword: "secret"
-      username: "admin"
-      password: "pass"
+      postgresPassword: "*"
+      username: "*"
+      password: "*"
       database: "auth"
       port: "5432"
 
