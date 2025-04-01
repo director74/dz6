@@ -1,10 +1,10 @@
-# dz6 Backend for frontends. Apigateway
+# dz6 Приложение для проверки авторизации через Apigateway 
 
 Для запуска проекта использовать команды
 
 ```bash
 helm dependency build
-helm install dz6 ./
+helm install -n app dz6 ./
 ```
 
 Также необходимо заполнить данные для подключения postgresql
