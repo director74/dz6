@@ -28,6 +28,32 @@ Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "$(minikube ip) a
 echo "$(minikube ip) arch.homework" | sudo tee -a /etc/hosts
 ```
 
+## Настройка подключения к базе данных
+
+Перед установкой чартов необходимо убедиться, что в файлах values.yaml указаны корректные параметры подключения к базе данных:
+
+### В auth_chart/values.yaml:
+```yaml
+global:
+  postgresql:
+    auth:
+      username: postgres
+      password: postgres
+      database: postgres
+```
+
+### В app_chart/values.yaml:
+```yaml
+global:
+  postgresql:
+    auth:
+      username: postgres
+      password: postgres
+      database: postgres
+```
+
+Измените эти значения в соответствии с вашей конфигурацией базы данных.
+
 ## Требования
 
 - Kubernetes (Minikube)
