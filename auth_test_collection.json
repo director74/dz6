@@ -1,0 +1,339 @@
+{
+  "info": {
+    "name": "Auth Flow Tests",
+    "description": "Тесты для проверки аутентификации и авторизации",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://arch.homework",
+      "type": "string"
+    },
+    {
+      "key": "user1Id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user2Id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Регистрация пользователя 1",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set('user1_login', 'testuser1_' + Date.now());",
+              "pm.collectionVariables.set('user1_password', 'password123');"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Проверка статуса 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"login\": \"{{user1_login}}\",\n    \"password\": \"{{user1_password}}\",\n    \"email\": \"testuser1@example.com\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"User1\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["register"]
+        }
+      }
+    },
+    {
+      "name": "Проверка профиля без авторизации",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Доступ запрещён\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([401, 302]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "me"]
+        }
+      }
+    },
+    {
+      "name": "Вход пользователя 1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Статус 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Сессия установлена\", function () {",
+              "    pm.expect(pm.cookies.has('session_id')).to.be.true;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"login\": \"{{user1_login}}\",\n    \"password\": \"{{user1_password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "Получение профиля пользователя 1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Статус 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Данные получены\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "    pm.expect(jsonData.data).to.exist;",
+              "    pm.expect(jsonData.data.id).to.exist;",
+              "    pm.expect(jsonData.data.username).to.exist;",
+              "    pm.expect(jsonData.data.firstName).to.exist;",
+              "    pm.expect(jsonData.data.lastName).to.exist;",
+              "    pm.expect(jsonData.data.email).to.exist;",
+              "    pm.collectionVariables.set('user1Id', jsonData.data.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "me"]
+        }
+      }
+    },
+    {
+      "name": "Выход пользователя 1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Статус 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/logout",
+          "host": ["{{baseUrl}}"],
+          "path": ["logout"]
+        }
+      }
+    },
+    {
+      "name": "Регистрация пользователя 2",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set('user2_login', 'testuser2_' + Date.now());",
+              "pm.collectionVariables.set('user2_password', 'password456');"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Статус 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"login\": \"{{user2_login}}\",\n    \"password\": \"{{user2_password}}\",\n    \"email\": \"testuser2@example.com\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"User2\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["register"]
+        }
+      }
+    },
+    {
+      "name": "Вход пользователя 2",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Статус 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Сессия установлена\", function () {",
+              "    pm.expect(pm.cookies.has('session_id')).to.be.true;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"login\": \"{{user2_login}}\",\n    \"password\": \"{{user2_password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "Получение профиля пользователя 2",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Статус 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Данные получены\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('object');",
+              "    pm.expect(jsonData.data).to.exist;",
+              "    pm.expect(jsonData.data.id).to.exist;",
+              "    pm.expect(jsonData.data.username).to.exist;",
+              "    pm.expect(jsonData.data.firstName).to.exist;",
+              "    pm.expect(jsonData.data.lastName).to.exist;",
+              "    pm.expect(jsonData.data.email).to.exist;",
+              "    pm.collectionVariables.set('user2Id', jsonData.data.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "me"]
+        }
+      }
+    },
+    {
+      "name": "Попытка доступа к профилю пользователя 1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Доступ запрещен\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([403, 404]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{user1Id}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "{{user1Id}}"]
+        }
+      }
+    }
+  ]
+} 
