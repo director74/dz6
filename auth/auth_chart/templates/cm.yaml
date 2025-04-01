@@ -20,4 +20,5 @@ data:
     OVERRIDING SYSTEM VALUE\r\nVALUES (3, 'demo3', '$2y$10$0ewZc46GQsfLtM6FB/bYXupdvdoEDX/DXAFexfhQuVAipzioZs49C',
     'demo3@localhost.com', 'Сергей', 'Солнцев');\r\n\r\n-- ----------------------------\r\n--
     Primary Key structure for table auth_user\r\n-- ----------------------------\r\nALTER
-    TABLE \"public\".auth_users\r\n    ADD CONSTRAINT \"users_pkey\" PRIMARY KEY (\"id\");"
+    TABLE \"public\".auth_users\r\n    ADD CONSTRAINT \"users_pkey\" PRIMARY KEY (\"id\");
+    ALTER SEQUENCE auth_users_id_seq RESTART WITH 4;"
